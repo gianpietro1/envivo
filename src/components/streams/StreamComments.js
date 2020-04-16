@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Comment, Header, Segment } from "semantic-ui-react";
+import { Comment, Segment } from "semantic-ui-react";
 import { createComment, fetchComments, deleteComment } from "../../actions";
 import StreamCommentsForm from "./StreamCommentsForm";
 
@@ -12,12 +12,12 @@ class StreamComments extends React.Component {
 
   messagesEndRef = React.createRef();
 
-  onSubmitComment = formValues => {
+  onSubmitComment = (formValues) => {
     const streamId = this.props.streamId;
     this.props.createComment(streamId, formValues.comment);
   };
 
-  onDeleteComment = commentId => {
+  onDeleteComment = (commentId) => {
     this.props.deleteComment(commentId);
   };
 
@@ -30,7 +30,7 @@ class StreamComments extends React.Component {
   };
 
   renderCommentList() {
-    return this.props.comments.map(comment => {
+    return this.props.comments.map((comment) => {
       return (
         <Comment key={comment.id}>
           <Comment.Avatar src="/avatars/elliot.jpg" />
@@ -76,15 +76,15 @@ class StreamComments extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     comments: Object.values(state.comments),
-    currentUserId: state.auth.userId
+    currentUserId: state.auth.userId,
   };
 };
 
 export default connect(mapStateToProps, {
   fetchComments,
   createComment,
-  deleteComment
+  deleteComment,
 })(StreamComments);

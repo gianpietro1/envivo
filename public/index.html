@@ -31,7 +31,7 @@
     <script src=https://apis.google.com/js/api.js></script>
     <script src="https://checkout.culqi.com/v3"></script>
     <script>
-      Culqi.publicKey = 'pk_test_36e90045b22dad60';
+      Culqi.publicKey = process.env.REACT_APP_CULQI_KEY;
       Culqi.init();
   </script>
   

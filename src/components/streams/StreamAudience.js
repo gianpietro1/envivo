@@ -1,14 +1,13 @@
 import React from "react";
 import AgoraRTC from "agora-rtc-sdk";
 import { Embed } from "semantic-ui-react";
-import { APP_ID } from "../../settings";
 
 import defaultVideoImage from "../../assets/images/defaultVideoImage.jpg";
 import "../../assets/styles/StreamAudience.css";
 
 class StreamAudience extends React.Component {
   state = {
-    currentMediaId: null
+    currentMediaId: null,
   };
 
   componentDidMount() {
@@ -34,20 +33,20 @@ class StreamAudience extends React.Component {
       published: false,
       localStream: null,
       remoteStreams: [],
-      params: {}
+      params: {},
     };
 
     const option = {
-      appID: APP_ID,
+      appID: process.env.REACT_APP_AGORA_ID,
       channel: this.props.id.toString(),
       uid: null,
-      token: this.props.token
+      token: this.props.token,
     };
 
     // Create a client
     rtc.client = AgoraRTC.createClient({
       mode: "live",
-      codec: "h264"
+      codec: "h264",
     });
 
     // Initialize the client
@@ -72,7 +71,7 @@ class StreamAudience extends React.Component {
           }
         );
       },
-      err => {
+      (err) => {
         console.error(err);
       }
     );
