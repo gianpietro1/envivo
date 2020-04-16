@@ -1,0 +1,17 @@
+.playerMenu {
+  position: absolute;
+  bottom: 0;
+  height: 15%;
+  width: 100%;
+  z-index: 9999;
+  text-align: center;
+  margin: auto;
+  padding: auto;
+}
+
+.playerMenu .icon {
+  color: white;
+  background-color: transparent;
+  font-size: calc(0.7em + 1vw);
+  margin: auto 20px;
+}

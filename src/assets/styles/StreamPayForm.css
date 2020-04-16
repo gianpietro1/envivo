@@ -1,0 +1,8 @@
+div.or::before {
+  content: "o" !important;
+  line-height: 1.7em !important;
+}
+
+select:invalid {
+  color: lightgray;
+}
