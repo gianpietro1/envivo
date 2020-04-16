@@ -9,7 +9,7 @@ class StreamPayForm extends React.Component {
     this.props.cancelPayment();
   };
 
-  processPay = formValues => {
+  processPay = (formValues) => {
     // Culqi.createToken();
     console.log(formValues);
   };
@@ -29,7 +29,7 @@ class StreamPayForm extends React.Component {
     );
   };
 
-  normalizeMonth = value => {
+  normalizeMonth = (value) => {
     if (!value) {
       return value;
     }
@@ -41,7 +41,7 @@ class StreamPayForm extends React.Component {
     return `${onlyNums.slice(0, 2)}`;
   };
 
-  normalizeCard = value => {
+  normalizeCard = (value) => {
     if (!value) {
       return value;
     }
@@ -63,7 +63,7 @@ class StreamPayForm extends React.Component {
     )}-${onlyNums.slice(12, 16)}`;
   };
 
-  normalizeCVV = value => {
+  normalizeCVV = (value) => {
     if (!value) {
       return value;
     }
@@ -152,6 +152,6 @@ class StreamPayForm extends React.Component {
 // };
 
 export default reduxForm({
-  form: "streamPayForm"
+  form: "streamPayForm",
   // validate
 })(StreamPayForm);

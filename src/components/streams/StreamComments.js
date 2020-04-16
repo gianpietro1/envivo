@@ -21,6 +21,7 @@ class StreamComments extends React.Component {
   onSubmitComment = (formValues) => {
     const streamId = this.props.streamId;
     this.props.createComment(streamId, formValues.comment);
+    this.scrollToBottom();
   };
 
   onDeleteComment = (commentId) => {
