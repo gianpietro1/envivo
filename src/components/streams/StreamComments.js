@@ -8,6 +8,12 @@ class StreamComments extends React.Component {
   componentDidMount() {
     const streamId = this.props.streamId;
     this.props.fetchComments(streamId);
+    this.timer = setInterval(() => this.props.fetchComments(streamId), 5000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    this.timer = null;
   }
 
   messagesEndRef = React.createRef();

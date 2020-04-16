@@ -26,8 +26,7 @@ class StreamCommentsForm extends React.Component {
     );
   };
 
-  onSubmit = formValues => {
-    console.log(formValues);
+  onSubmit = (formValues) => {
     this.props.onSubmit(formValues);
   };
 
@@ -42,7 +41,7 @@ class StreamCommentsForm extends React.Component {
     return (
       <Form
         reply
-        onKeyDown={e => {
+        onKeyDown={(e) => {
           this.handleKeyDown(e, this.props.handleSubmit(this.onSubmit));
         }}
       >
@@ -75,6 +74,6 @@ const afterSubmit = (result, dispatch) => dispatch(reset("streamCommentsForm"));
 
 export default reduxForm({
   form: "streamCommentsForm",
-  onSubmitSuccess: afterSubmit
+  onSubmitSuccess: afterSubmit,
   // validate
 })(StreamCommentsForm);
