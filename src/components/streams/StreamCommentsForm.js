@@ -3,16 +3,6 @@ import { reset, Field, reduxForm } from "redux-form";
 import { Form, TextArea } from "semantic-ui-react";
 
 class StreamCommentsForm extends React.Component {
-  // renderError({ error, touched }) {
-  //   if (touched && error) {
-  //     return (
-  //       <div className="ui error message">
-  //         <div className="header">{error}</div>
-  //       </div>
-  //     );
-  //   }
-  // }
-
   renderInput = ({ input, meta, placeholder }) => {
     return (
       <div>

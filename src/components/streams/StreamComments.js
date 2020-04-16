@@ -28,7 +28,7 @@ class StreamComments extends React.Component {
   };
 
   componentDidUpdate() {
-    this.scrollToBottom();
+    // this.scrollToBottom();
   }
 
   scrollToBottom = () => {
