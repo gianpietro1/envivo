@@ -1,17 +1,42 @@
 import React from "react";
 import { Field, reduxForm } from "redux-form";
 import { Button, Form, Segment } from "semantic-ui-react";
+import { connect } from "react-redux";
 
+import {
+  initPayment,
+  processPayment,
+  submitPayment,
+  deactivatePayment,
+} from "../../actions";
 import "../../assets/styles/StreamPayForm.css";
 
 class StreamPayForm extends React.Component {
-  cancelPayment = () => {
-    this.props.cancelPayment();
+  constructor() {
+    super();
+    window.StreamPayComponent = this;
+  }
+
+  componentDidMount() {
+    this.props.initPayment();
+  }
+
+  processPayment = (formValues) => {
+    const { amount, email } = formValues;
+    this.props.processPayment(amount, email);
+    console.log(`about to submit payment with ${amount} and ${email}`);
+    const Culqi = window.Culqi;
+    Culqi.createToken();
   };
 
-  processPay = (formValues) => {
-    // Culqi.createToken();
-    console.log(formValues);
+  culqiback(token) {
+    const { amount, email } = this.props.payment;
+    console.log(`submiting payment with ${token}, ${amount} and ${email}`);
+    this.props.submitPayment(token, amount, email);
+  }
+
+  paymentOver = () => {
+    this.props.deactivatePayment();
   };
 
   renderInput = ({ input, placeholder, dataCulqi, id }) => {
@@ -29,6 +54,22 @@ class StreamPayForm extends React.Component {
     );
   };
 
+  renderInputCard = ({ input, placeholder, dataCulqi, id }) => {
+    return (
+      <Form.Field>
+        <Form.Input
+          fluid
+          {...input}
+          id={id}
+          data-culqi={dataCulqi}
+          placeholder={placeholder}
+          autoComplete="off"
+          type="number"
+        />
+      </Form.Field>
+    );
+  };
+
   normalizeMonth = (value) => {
     if (!value) {
       return value;
@@ -39,6 +80,18 @@ class StreamPayForm extends React.Component {
       return onlyNums;
     }
     return `${onlyNums.slice(0, 2)}`;
+  };
+
+  normalizeYear = (value) => {
+    if (!value) {
+      return value;
+    }
+
+    const onlyNums = value.replace(/[^\d]/g, "");
+    if (onlyNums.length <= 4) {
+      return onlyNums;
+    }
+    return `${onlyNums.slice(0, 4)}`;
   };
 
   normalizeCard = (value) => {
@@ -78,7 +131,14 @@ class StreamPayForm extends React.Component {
   render() {
     return (
       <Segment inverted>
-        <Form inverted onSubmit={this.props.handleSubmit(this.processPay)}>
+        <Form inverted onSubmit={this.props.handleSubmit(this.processPayment)}>
+          <Field
+            component={this.renderInput}
+            placeholder="Monto"
+            name="amount"
+            data-culqi="card[amount]"
+            id="card[amount]"
+          />
           <Field
             component={this.renderInput}
             placeholder="Correo Electrónico"
@@ -87,12 +147,11 @@ class StreamPayForm extends React.Component {
             id="card[email]"
           />
           <Field
-            component={this.renderInput}
+            component={this.renderInputCard}
             placeholder="Número de tarjeta"
             name="cardnumber"
             data-culqi="card[number]"
             id="card[number]"
-            normalize={this.normalizeCard}
           />
           <Form.Group widths="equal">
             <Field
@@ -107,7 +166,7 @@ class StreamPayForm extends React.Component {
               component={this.renderInput}
               placeholder="Mes Exp"
               name="exp_month"
-              dataCulqi="card[exp_month]"
+              data-culqi="card[exp_month]"
               id="card[exp_month]"
               normalize={this.normalizeMonth}
             />
@@ -115,14 +174,14 @@ class StreamPayForm extends React.Component {
               component={this.renderInput}
               placeholder="Año Exp"
               name="exp_year"
-              dataCulqi="card[exp_year]"
+              data-culqi="card[exp_year]"
               id="card[exp_year]"
-              normalize={this.normalizeMonth}
+              normalize={this.normalizeYear}
             />
           </Form.Group>
 
           <Button.Group style={{ width: "100%" }}>
-            <Button negative onClick={() => this.cancelPayment()}>
+            <Button negative onClick={() => this.paymentOver()}>
               Cancelar
             </Button>
             <Button.Or />
@@ -151,7 +210,20 @@ class StreamPayForm extends React.Component {
 //   return errors;
 // };
 
-export default reduxForm({
-  form: "streamPayForm",
-  // validate
-})(StreamPayForm);
+const mapStateToProps = ({ payment }) => {
+  return {
+    payment,
+  };
+};
+
+export default connect(mapStateToProps, {
+  initPayment,
+  processPayment,
+  submitPayment,
+  deactivatePayment,
+})(
+  reduxForm({
+    form: "streamPayForm",
+    // validate
+  })(StreamPayForm)
+);

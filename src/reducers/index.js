@@ -5,6 +5,7 @@ import streamsReducer from "./streamsReducer";
 import tokenReducer from "./tokenReducer";
 import commentsReducer from "./commentsReducer";
 import paymentReducer from "./paymentReducer";
+import mediaReducer from "./mediaReducer";
 
 export default combineReducers({
   auth: authReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
   streams: streamsReducer,
   comments: commentsReducer,
   token: tokenReducer,
-  paymentStatus: paymentReducer
+  payment: paymentReducer,
+  media: mediaReducer,
 });

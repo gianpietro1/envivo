@@ -6,8 +6,7 @@ import {
   getStreamToken,
   createComment,
   fetchComments,
-  activatePayment,
-  deactivatePayment
+  initPayment,
 } from "../../actions";
 import StreamBroadcaster from "./StreamBroadcaster";
 import StreamAudience from "./StreamAudience";
@@ -28,7 +27,7 @@ class StreamShow extends React.Component {
     const isAdmin = this.props.currentUserId === userId ? true : false;
     const streamId = this.props.match.params.id;
     this.props.getStreamToken(streamId);
-
+    console.log(this.props.token);
     if (this.props.token) {
       if (isAdmin) {
         return (
@@ -50,27 +49,18 @@ class StreamShow extends React.Component {
     }
   }
 
-  onSubmitComment = formValues => {
+  onSubmitComment = (formValues) => {
     const streamId = this.props.match.params.id;
     this.props.createComment(streamId, formValues.comment);
   };
 
   renderPayForm = () => {
-    this.props.activatePayment();
-  };
-
-  cancelPayment = () => {
-    this.props.deactivatePayment();
+    this.props.initPayment();
   };
 
   renderCommentsOrPayment = () => {
-    if (this.props.paymentStatus === true) {
-      return (
-        <StreamPayForm
-          cancelPayment={this.cancelPayment}
-          expirationDate={this.props.expirationDate}
-        />
-      );
+    if (this.props.paymentStatus !== null) {
+      return <StreamPayForm />;
     }
     return <StreamComments streamId={this.props.stream.id} />;
   };
@@ -80,14 +70,11 @@ class StreamShow extends React.Component {
       return <div>Loading...</div>;
     }
     const { userId } = this.props.stream;
-    const isAdmin = this.props.currentUserId === userId ? true : false;
     const { title, description } = this.props.stream;
     return (
       <Grid stackable columns={2}>
-        <Grid.Row>
-          <Grid.Column width={11}>
-            {isAdmin !== null ? this.renderPlayer() : "Loading Player"}
-          </Grid.Column>
+        <Grid.Row style={{ minHeight: "470px" }}>
+          <Grid.Column width={11}>{this.renderPlayer()}</Grid.Column>
           <Grid.Column width={5}>
             <Button
               color="green"
@@ -111,17 +98,11 @@ class StreamShow extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   const streamId = ownProps.match.params.id;
-  const expirationDate = state.form.streamPayForm
-    ? state.form.streamPayForm.values
-      ? state.form.streamPayForm.values.exp_month
-      : ""
-    : "";
   return {
     stream: state.streams[streamId],
     currentUserId: state.auth.userId,
+    paymentStatus: state.payment.status,
     token: state.token,
-    paymentStatus: state.paymentStatus,
-    expirationDate: expirationDate
   };
 };
 
@@ -130,6 +111,5 @@ export default connect(mapStateToProps, {
   fetchComments,
   getStreamToken,
   createComment,
-  activatePayment,
-  deactivatePayment
+  initPayment,
 })(StreamShow);
