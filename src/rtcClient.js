@@ -1,6 +1,6 @@
 import AgoraRTC from "agora-rtc-sdk";
 import EventEmitter from "events";
-const appID = process.env.REACT_APP_AGORA_APP_ID;
+const appID = process.env.NODE_ENV.REACT_APP_AGORA_APP_ID;
 console.log(
   "agora sdk version: " +
     AgoraRTC.VERSION +
