@@ -28,15 +28,14 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
     />
+    <!-- <script src=https://apis.google.com/js/api.js></script> -->
     <script>
-      var scriptElement = document.createElement('script');
-      scriptElement.nonce = 'this_is_my_nonce';
-      scriptElement.setAttribute('js-v3-script', '');
-      var scriptBase = 'https://www.google.com/js/api.js';
+      var script = document.createElement("script");
+      script.nonce = "safari_nonce";
+      script.src = "https://apis.google.com/js/api.js";
+      document.getElementsByTagName("head")[0].appendChild(script);
     </script>
     <script src="https://checkout.culqi.com/v2"></script>
-    <script src=https://apis.google.com/js/api.js></script>
-
     <script>
       Culqi.publicKey = "%REACT_APP_CULQI_KEY%";
       Culqi.init();
