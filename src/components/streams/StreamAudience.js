@@ -55,7 +55,7 @@ class StreamAudience extends React.Component {
 
   subscribeToStream = () => {
     const option = {
-      appID: process.env.NODE_ENV.REACT_APP_AGORA_APP_ID,
+      appID: process.env.REACT_APP_AGORA_APP_ID,
       channel: this.props.id,
       uid: null,
       token: this.props.token,
