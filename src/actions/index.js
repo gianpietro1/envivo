@@ -18,11 +18,14 @@ import {
   DEACTIVATE_PAYMENT,
   SUBMIT_PAYMENT,
   PROCESS_PAYMENT,
+  SET_AMOUNT,
   CREATE_MEDIA,
   SET_STREAM,
   RESET_STREAM,
   TOGGLE_MUTE_AUDIO,
   TOGGLE_MUTE_VIDEO,
+  CREATE_COLLECTED,
+  FETCH_COLLECTED,
 } from "./types";
 
 export const signIn = (userId) => {
@@ -42,6 +45,12 @@ export const createStream = (formValues) => async (dispatch, getState) => {
   const { userId } = getState().auth;
   const response = await streams.post("/streams", { ...formValues, userId });
   dispatch({ type: CREATE_STREAM, payload: response.data });
+  // now create a "collected" entry for this stream
+  const response_collected = await streams.post("/collected", {
+    id: response.data.id,
+    collected: 0,
+  });
+  dispatch({ type: CREATE_COLLECTED, payload: response_collected.data });
   // Do some programmatic navigation to get the user back to root route
   // We had to migrate from BrowserRouter to (Plain)Router to be able to import our own history
   history.push("/");
@@ -63,6 +72,12 @@ export const editStream = (id, formValues) => async (dispatch) => {
   const response = await streams.patch(`/streams/${id}`, formValues);
   dispatch({ type: EDIT_STREAM, payload: response.data });
   history.push("/");
+};
+
+export const updateStream = (id, formValues) => async (dispatch) => {
+  // update stream DB without leaving
+  const response = await streams.patch(`/streams/${id}`, formValues);
+  dispatch({ type: EDIT_STREAM, payload: response.data });
 };
 
 export const deleteStream = (id) => async (dispatch) => {
@@ -107,9 +122,10 @@ export const deleteComment = (id) => async (dispatch) => {
   dispatch({ type: DELETE_COMMENT, payload: id });
 };
 
-export const initPayment = () => {
+export const initPayment = (value) => {
   return {
     type: INIT_PAYMENT,
+    payload: "payment_init_" + value,
   };
 };
 
@@ -212,6 +228,13 @@ export const processPayment = (amount, email) => {
   };
 };
 
+export const setAmount = (amount) => {
+  return {
+    type: SET_AMOUNT,
+    payload: amount,
+  };
+};
+
 export const createMedia = (userId) => {
   return {
     type: CREATE_MEDIA,
@@ -241,4 +264,21 @@ export const toggleMuteVideo = () => {
   return {
     type: TOGGLE_MUTE_VIDEO,
   };
+};
+
+export const createCollected = (streamId, amount) => async (dispatch) => {
+  const response = await streams.post("/collected", {
+    streamId,
+    amount,
+  });
+  dispatch({ type: CREATE_COLLECTED, payload: response.data });
+};
+
+export const fetchCollected = (streamId) => async (dispatch) => {
+  const response = await streams.get("/collected", {
+    params: {
+      streamId,
+    },
+  });
+  dispatch({ type: FETCH_COLLECTED, payload: response.data });
 };

@@ -29,43 +29,49 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
     />
     <script src=https://apis.google.com/js/api.js></script>
+    <script>
+      var scriptElement = document.createElement('script');
+      scriptElement.nonce = 'this_is_my_nonce';
+      scriptElement.setAttribute('js-v3-script', '');
+      var scriptBase = 'https://www.google.com/js/api.js';
+    </script>
     <script src="https://checkout.culqi.com/v2"></script>
     <script>
       Culqi.publicKey = "%REACT_APP_CULQI_KEY%";
       Culqi.init();
-      function culqi () {
-      if (Culqi.token) {
-        // ¡Objeto Token creado exitosamente!
-        var token = Culqi.token.id;
-        // alert("Se ha creado un token:" + token);
-        window.StreamPayComponent.culqiback(Culqi.token.id);
-        // Send token to server
-      //  fetch("http://localhost:3001/tokens", {
-      //       method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      //       mode: 'cors', // no-cors, *cors, same-origin
-      //       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      //       credentials: 'same-origin', // include, *same-origin, omit
-      //       headers: {
-      //         'Content-Type': 'application/json'
-      //         // 'Content-Type': 'application/x-www-form-urlencoded',
-      //       },
-      //       redirect: 'follow', // manual, *follow, error
-      //       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      //       body: JSON.stringify({ token: token }) // body data type must match "Content-Type" header
-      //     }).then((response) => {
-      //         return response.json();
-      //     }).then((data) => {
-      //       window.StreamPayComponent.culqiback(data);
-      //       });;
-      } else {
-        // ¡Hubo algún problema!
-        // Mostramos JSON de objeto error en consola
-        console.log(Culqi.error);
-        alert(Culqi.error.user_message);
+      function culqi() {
+        if (Culqi.token) {
+          // ¡Objeto Token creado exitosamente!
+          var token = Culqi.token.id;
+          // alert("Se ha creado un token:" + token);
+          window.StreamPayComponent.culqiback(Culqi.token.id);
+          // Send token to server
+          //  fetch("http://localhost:3001/tokens", {
+          //       method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          //       mode: 'cors', // no-cors, *cors, same-origin
+          //       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          //       credentials: 'same-origin', // include, *same-origin, omit
+          //       headers: {
+          //         'Content-Type': 'application/json'
+          //         // 'Content-Type': 'application/x-www-form-urlencoded',
+          //       },
+          //       redirect: 'follow', // manual, *follow, error
+          //       referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          //       body: JSON.stringify({ token: token }) // body data type must match "Content-Type" header
+          //     }).then((response) => {
+          //         return response.json();
+          //     }).then((data) => {
+          //       window.StreamPayComponent.culqiback(data);
+          //       });;
+        } else {
+          // ¡Hubo algún problema!
+          // Mostramos JSON de objeto error en consola
+          console.log(Culqi.error);
+          alert(Culqi.error.user_message);
+        }
       }
-    };
-  </script>
-  
+    </script>
+
     <title>React App</title>
   </head>
   <body>

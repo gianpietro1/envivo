@@ -8,6 +8,7 @@ import {
   processPayment,
   submitPayment,
   deactivatePayment,
+  createCollected,
 } from "../../actions";
 import "../../assets/styles/StreamPayForm.css";
 
@@ -17,12 +18,16 @@ class StreamPayForm extends React.Component {
     window.StreamPayComponent = this;
   }
 
-  componentDidMount() {
-    this.props.initPayment();
+  componentWillUnmount() {
+    this.props.deactivatePayment();
   }
 
-  processPayment = (formValues) => {
-    const { amount, email } = formValues;
+  componentDidMount() {
+    this.props.initPayment("card");
+  }
+
+  processPayment = ({ email }) => {
+    const amount = this.props.paymentAmount;
     this.props.processPayment(amount, email);
     console.log(`about to submit payment with ${amount} and ${email}`);
     const Culqi = window.Culqi;
@@ -33,6 +38,7 @@ class StreamPayForm extends React.Component {
     const { amount, email } = this.props.payment;
     console.log(`submiting payment with ${token}, ${amount} and ${email}`);
     this.props.submitPayment(token, amount, email);
+    this.props.createCollected(this.props.streamId, parseInt(amount));
   }
 
   paymentOver = () => {
@@ -132,13 +138,23 @@ class StreamPayForm extends React.Component {
     return (
       <Segment inverted>
         <Form inverted onSubmit={this.props.handleSubmit(this.processPayment)}>
-          <Field
-            component={this.renderInput}
-            placeholder="Monto"
-            name="amount"
-            data-culqi="card[amount]"
-            id="card[amount]"
-          />
+          <div>
+            <h3 style={{ textAlign: "center" }}>
+              ¡Gracias! Estás por aportarnos:
+            </h3>
+            <h1
+              style={{
+                fontSize: "2em",
+                fontWeight: "bold",
+                textAlign: "center",
+                color: "lightblue",
+                marginTop: "0",
+                marginBottom: "0.5em",
+              }}
+            >
+              S/.{this.props.paymentAmount}.00
+            </h1>
+          </div>
           <Field
             component={this.renderInput}
             placeholder="Correo Electrónico"
@@ -221,6 +237,7 @@ export default connect(mapStateToProps, {
   processPayment,
   submitPayment,
   deactivatePayment,
+  createCollected,
 })(
   reduxForm({
     form: "streamPayForm",

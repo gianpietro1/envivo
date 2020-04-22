@@ -14,18 +14,19 @@ class StreamAudience extends React.Component {
     this.streamClient = this.localClient();
   }
 
-  componentWillUnmount() {
-    if (this.state.currentMediaId) {
-      //this.destroyPlayer();
-    }
-  }
-
   componentDidMount() {
     this.props.createMedia();
   }
 
   componentWillUnmount() {
-    //this.closeStream();
+    this.props.resetStream();
+    if (this.streamClient) {
+      this.streamClient.leave();
+      if (this.streamClient._localStream) {
+        this.streamClient._localStream.close();
+        this.streamClient.destroy();
+      }
+    }
   }
 
   localClient = () => {
@@ -42,15 +43,20 @@ class StreamAudience extends React.Component {
 
   closeStream() {
     this.props.resetStream();
-    this.streamClient._localStream.close();
-    this.streamClient.destroy();
+    if (this.streamClient) {
+      this.streamClient.leave();
+      if (this.streamClient._localStream) {
+        this.streamClient._localStream.close();
+        this.streamClient.destroy();
+      }
+    }
     history.push("/");
   }
 
   subscribeToStream = () => {
     const option = {
       appID: process.env.REACT_APP_AGORA_APP_ID,
-      channel: this.props.id.toString(),
+      channel: this.props.id,
       uid: null,
       token: this.props.token,
       host: false,
@@ -95,57 +101,6 @@ class StreamAudience extends React.Component {
       });
     });
   };
-
-  // buildPlayer = () => {
-  //   // rtc object
-  //   const rtc = {
-  //     client: null,
-  //     joined: false,
-  //     published: false,
-  //     localStream: null,
-  //     remoteStreams: [],
-  //     params: {},
-  //   };
-
-  //   const option = {
-  //     appID: process.env.REACT_APP_AGORA_APP_ID,
-  //     channel: this.props.id.toString(),
-  //     uid: null,
-  //     token: this.props.token,
-  //   };
-
-  //   // Create a client
-  //   rtc.client = AgoraRTC.createClient({
-  //     mode: "live",
-  //     codec: "h264",
-  //   });
-
-  //   // Initialize the client
-  //   rtc.client.init(
-  //     option.appID,
-  //     function() {
-  //       // The value of role can be "host" or "audience".
-  //       rtc.client.setClientRole("audience");
-  //       // Join a channel
-  //       rtc.client.join(
-  //         option.token ? option.token : null,
-  //         option.channel,
-  //         option.uid ? +option.uid : null,
-  //         function(uid) {
-  //           console.log(
-  //             "join channel: " + option.channel + " success, uid: " + uid
-  //           );
-  //           rtc.params.uid = uid;
-  //         },
-  //         function(err) {
-  //           console.error("client join failed", err);
-  //         }
-  //       );
-  //     },
-  //     (err) => {
-  //       console.error(err);
-  //     }
-  //   );
 
   render() {
     const streamId = this.props.media.streamId;

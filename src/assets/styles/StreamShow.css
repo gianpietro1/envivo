@@ -1,0 +1,9 @@
+#payment_buttons .ui.input > input {
+  max-width: 52%;
+  padding: 7px;
+}
+
+#payment_buttons .button {
+  background-color: #21ba45;
+  color: white;
+}

@@ -1,9 +1,9 @@
-#local_stream {
+/* #local_stream {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-}
+} */
 
 #local_stream > [id^="player_"] {
   position: relative;
@@ -36,4 +36,25 @@
   background-color: transparent;
   font-size: calc(0.7em + 1vw);
   margin: auto 20px;
+}
+
+#local_stream .ui.button {
+  border-radius: 100%;
+  padding: 12px;
+  font-size: 1.8em;
+}
+
+#local_stream .ui.button:hover {
+  background-color: rgba(255, 186, 0, 0.4) !important;
+}
+
+#local_stream .ui.button.toggle.active,
+#local_stream .ui.buttons .button.toggle.active,
+#local_stream .ui.toggle.buttons .active.button {
+  background-color: rgba(33, 186, 69, 0.4) !important;
+}
+
+#local_stream button[aria-pressed="false"],
+#local_stream [role="button"][aria-pressed="false"] {
+  background-color: rgba(255, 0, 0, 0.2) !important;
 }

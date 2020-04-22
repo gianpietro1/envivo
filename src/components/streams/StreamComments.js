@@ -69,7 +69,7 @@ class StreamComments extends React.Component {
   render() {
     return (
       <Comment.Group>
-        <Segment style={{ overflow: "auto", maxHeight: 305 }}>
+        <Segment style={{ overflow: "auto", maxHeight: 235 }}>
           {this.renderCommentList()}
           <div ref={this.messagesEndRef} />
         </Segment>

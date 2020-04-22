@@ -6,6 +6,7 @@ import tokenReducer from "./tokenReducer";
 import commentsReducer from "./commentsReducer";
 import paymentReducer from "./paymentReducer";
 import mediaReducer from "./mediaReducer";
+import collectedReducer from "./collectedReducer";
 
 export default combineReducers({
   auth: authReducer,
@@ -15,4 +16,5 @@ export default combineReducers({
   token: tokenReducer,
   payment: paymentReducer,
   media: mediaReducer,
+  collected: collectedReducer,
 });

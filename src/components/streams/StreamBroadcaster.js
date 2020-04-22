@@ -10,6 +10,7 @@ import {
   resetStream,
   toggleMuteAudio,
   toggleMuteVideo,
+  updateStream,
 } from "../../actions";
 
 import defaultVideoImage from "../../assets/images/defaultVideoImage.jpg";
@@ -26,7 +27,12 @@ class StreamBroadcaster extends React.Component {
   }
 
   componentWillUnmount() {
-    this.closeStream();
+    this.props.updateStream(this.props.id, { streaming: false });
+    if (this.props.media.streamId) {
+      this.props.resetStream();
+      this.streamClient._localStream.close();
+      this.streamClient.destroy();
+    }
   }
 
   localClient = () => {
@@ -42,25 +48,33 @@ class StreamBroadcaster extends React.Component {
   };
 
   closeStream() {
-    this.props.resetStream();
-    this.streamClient._localStream.close();
-    this.streamClient.destroy();
-    history.push("/");
+    this.props.updateStream(this.props.id, { streaming: false });
+    if (this.props.media.streamId) {
+      this.props.resetStream();
+      this.streamClient._localStream.close();
+      this.streamClient.destroy();
+      history.push("/");
+    }
   }
 
   publishStream() {
     const option = {
       appID: process.env.REACT_APP_AGORA_APP_ID,
-      channel: this.props.id.toString(),
+      channel: this.props.id,
       uid: null,
       token: this.props.token,
       host: true,
+      resolution: { audio: "high_quality_stereo", video: "720p_1" },
     };
-    console.log(option.token);
+    console.log(`MY TOKEN IS ${option.token}`);
     //this.props.setClient(streamClient);
     this.streamClient.join(option).then((uid) => {
       // set action stream is ON
+      console.log(this.streamClient);
+      console.log(this.streamClient._localStream);
       this.props.setStream(this.streamClient._params.uid);
+
+      this.props.updateStream(option.channel, { streaming: true });
       this.streamClient._localStream.play("local_stream");
       this.streamClient.publish();
     });
@@ -94,12 +108,9 @@ class StreamBroadcaster extends React.Component {
           >
             <Icon name="microphone" />
           </Button>
-          {/* <button className="ui icon button">
-            <i className="desktop icon"></i>
-          </button> */}
-          <button className="ui icon button" onClick={() => this.closeStream()}>
-            <i className="close icon"></i>
-          </button>
+          <Button icon onClick={() => this.closeStream()}>
+            <Icon name="close" />
+          </Button>
         </div>
       );
     };
@@ -139,4 +150,5 @@ export default connect(mapStateToProps, {
   resetStream,
   toggleMuteAudio,
   toggleMuteVideo,
+  updateStream,
 })(StreamBroadcaster);

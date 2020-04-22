@@ -29,7 +29,7 @@ export default (state = INITIAL_STATE, action) => {
     case SET_STREAM:
       return { ...state, streamId: action.payload };
     case RESET_STREAM:
-      return { ...state, streamId: null };
+      return { ...state, streamId: null, muteAudio: false, muteVideo: false };
     case TOGGLE_MUTE_AUDIO:
       return { ...state, muteAudio: !state.muteAudio };
     case TOGGLE_MUTE_VIDEO:

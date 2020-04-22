@@ -70,7 +70,8 @@ export default class RTCClient {
       });
 
       if (data.resolution && data.resolution !== "default") {
-        rtcStream.setVideoProfile(data.resolution);
+        rtcStream.setVideoProfile(data.resolution.video);
+        rtcStream.setAudioProfile(data.resolution.audio);
       }
 
       // init local stream
