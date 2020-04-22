@@ -66,6 +66,8 @@ class StreamBroadcaster extends React.Component {
       host: true,
       resolution: { audio: "high_quality_stereo", video: "720p_1" },
     };
+    console.log(`MY APP IS ${option.appID}`);
+
     console.log(`MY TOKEN IS ${option.token}`);
     //this.props.setClient(streamClient);
     this.streamClient.join(option).then((uid) => {
