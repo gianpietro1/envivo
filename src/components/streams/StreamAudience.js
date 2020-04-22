@@ -16,6 +16,7 @@ class StreamAudience extends React.Component {
 
   componentDidMount() {
     this.props.createMedia();
+    this.subscribeToStream();
   }
 
   componentWillUnmount() {
@@ -109,7 +110,7 @@ class StreamAudience extends React.Component {
       return (
         <Embed
           icon="right circle arrow"
-          onClick={() => this.subscribeToStream()}
+          // onClick={() => this.subscribeToStream()}
           placeholder={defaultVideoImage}
         />
       );
