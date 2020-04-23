@@ -13,7 +13,6 @@ import {
   updateStream,
 } from "../../actions";
 
-import defaultVideoImage from "../../assets/images/defaultVideoImage.jpg";
 import "../../assets/styles/StreamBroadcaster.css";
 
 class StreamBroadcaster extends React.Component {
@@ -24,6 +23,7 @@ class StreamBroadcaster extends React.Component {
 
   componentDidMount() {
     this.props.createMedia();
+    this.props.resetStream();
   }
 
   componentWillUnmount() {
@@ -60,7 +60,7 @@ class StreamBroadcaster extends React.Component {
   publishStream() {
     const option = {
       appID: process.env.REACT_APP_AGORA_APP_ID,
-      channel: this.props.id,
+      channel: this.props.id.toString(),
       uid: null,
       token: this.props.token,
       host: true,
@@ -91,6 +91,8 @@ class StreamBroadcaster extends React.Component {
   }
 
   render() {
+    const streamImage = this.props.streamImage;
+
     const adminButtons = () => {
       return (
         <div className="playerMenu">
@@ -123,7 +125,7 @@ class StreamBroadcaster extends React.Component {
         <Embed
           icon="video"
           onClick={() => this.publishStream()}
-          placeholder={defaultVideoImage}
+          placeholder={`/images/${streamImage}`}
         />
       );
     }
@@ -132,7 +134,7 @@ class StreamBroadcaster extends React.Component {
         className="ui embed"
         id="local_stream"
         icon="video"
-        placeholder={defaultVideoImage}
+        placeholder={`/images/${streamImage}`}
       >
         {adminButtons()}
       </div>
@@ -140,9 +142,11 @@ class StreamBroadcaster extends React.Component {
   }
 }
 
-const mapStateToProps = ({ media }) => {
+const mapStateToProps = ({ media, streams }, ownProps) => {
+  const streamId = ownProps.id;
   return {
     media,
+    streamImage: streams[streamId].image,
   };
 };
 

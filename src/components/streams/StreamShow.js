@@ -53,7 +53,7 @@ class StreamShow extends React.Component {
         return (
           <>
             <StreamBroadcaster
-              id={id.toString()}
+              id={id}
               isAdmin={isAdmin}
               token={this.props.token}
             />
@@ -62,7 +62,11 @@ class StreamShow extends React.Component {
       } else {
         return (
           <>
-            <StreamAudience id={id.toString()} token={this.props.token} />
+            <StreamAudience
+              id={id}
+              token={this.props.token}
+              currentUserId={this.props.currentUserId}
+            />
           </>
         );
       }
@@ -94,6 +98,7 @@ class StreamShow extends React.Component {
           paymentAmount={this.props.paymentAmount}
           collectedAmount={this.props.stream.collected}
           streamId={this.props.stream.id}
+          initialValues={{ email: this.props.currentUserEmail }}
         />
       );
     }
@@ -169,20 +174,38 @@ class StreamShow extends React.Component {
     }
   }
 
+  renderSideBar = () => {
+    const streamStreaming = this.props.stream.streaming;
+    if (!this.props.currentUserId) {
+      return <h3>Ingrese para visualizar la transmisión.</h3>;
+    } else if (!streamStreaming && this.props.currentUserId) {
+      return (
+        <h3>
+          Los comentarios y medios de pago se habilitarán en cuanto la
+          transmisión inicie.
+        </h3>
+      );
+    }
+    return (
+      <>
+        {this.props.currentUserId ? this.renderPaymentOrCollected() : ""}
+
+        {this.renderCommentsOrPayment()}
+      </>
+    );
+  };
+
   render() {
     if (!this.props.stream) {
       return <div>Loading...</div>;
     }
     const { title, description } = this.props.stream;
+
     return (
       <Grid stackable columns={2}>
         <Grid.Row style={{ minHeight: "470px" }}>
           <Grid.Column width={11}>{this.renderPlayer()}</Grid.Column>
-          <Grid.Column width={5}>
-            {this.renderPaymentOrCollected()}
-
-            {this.renderCommentsOrPayment()}
-          </Grid.Column>
+          <Grid.Column width={5}>{this.renderSideBar()}</Grid.Column>
         </Grid.Row>
         <Grid.Row>
           <Grid.Column width={16}>
@@ -199,6 +222,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     stream: state.streams[streamId],
     currentUserId: state.auth.userId,
+    currentUserEmail: state.auth.email,
     paymentStatus: state.payment.status,
     paymentAmount: state.payment.amount,
     token: state.token,

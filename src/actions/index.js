@@ -28,10 +28,10 @@ import {
   FETCH_COLLECTED,
 } from "./types";
 
-export const signIn = (userId) => {
+export const signIn = (userId, email) => {
   return {
     type: SIGN_IN,
-    payload: userId,
+    payload: { userId, email },
   };
 };
 

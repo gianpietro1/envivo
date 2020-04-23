@@ -4,8 +4,16 @@ import { connect } from "react-redux";
 
 import history from "../../history";
 import RTCClient from "../../rtcClient";
-import { createMedia, setStream, resetStream } from "../../actions";
+import {
+  createMedia,
+  setStream,
+  resetStream,
+  getStreamToken,
+  fetchStream,
+} from "../../actions";
 import defaultVideoImage from "../../assets/images/defaultVideoImage.jpg";
+import defaultVideoImageNoStream from "../../assets/images/defaultVideoImage-noStream.jpg";
+
 import "../../assets/styles/StreamAudience.css";
 
 class StreamAudience extends React.Component {
@@ -16,7 +24,21 @@ class StreamAudience extends React.Component {
 
   componentDidMount() {
     this.props.createMedia();
-    this.subscribeToStream();
+    if (!this.props.id) {
+      this.timer = setInterval(() => {
+        this.props.fetchStream(this.props.id);
+        this.props.getStreamToken(this.props.id);
+      }, 5000);
+    } else if (this.props.id && !this.props.streamStreaming) {
+      this.timer = setInterval(() => {
+        this.props.fetchStream(this.props.id);
+        this.props.getStreamToken(this.props.id);
+      }, 5000);
+    } else if (this.props.streamStreaming) {
+      this.props.fetchStream(this.props.id);
+      this.props.getStreamToken(this.props.id);
+      this.subscribeToStream();
+    }
   }
 
   componentWillUnmount() {
@@ -57,12 +79,12 @@ class StreamAudience extends React.Component {
   subscribeToStream = () => {
     const option = {
       appID: process.env.REACT_APP_AGORA_APP_ID,
-      channel: this.props.id,
+      channel: this.props.id.toString(),
       uid: null,
       token: this.props.token,
       host: false,
     };
-    console.log(`This one is: ${this}`);
+    console.log(`This one is: ${JSON.stringify(option)}`);
     //this.props.setClient(streamClient);
     this.streamClient.join(option).then((uid) => {
       // set action stream is ON
@@ -98,20 +120,32 @@ class StreamAudience extends React.Component {
         remoteStream.stop("remote_video_" + id);
         // Remove the view of the remote stream.
         this.props.resetStream();
-        console.log("stream-removed remote-uid: ", id);
+        // Update the streaming state
+        this.props.fetchStream(this.props.id);
+        // Leave the channel
+        this.streamClient.leave();
       });
     });
   };
 
   render() {
     const streamId = this.props.media.streamId;
+    const streamStreaming = this.props.streamStreaming;
+    const streamImage = this.props.streamImage;
 
-    if (!streamId) {
+    if (!streamStreaming || !this.props.currentUserId) {
+      return (
+        <div className="ui embed">
+          <i aria-hidden="true" className="hourglass icon" />
+          <img className="placeholder" src={`/images/${streamImage}`} />
+        </div>
+      );
+    } else if (streamStreaming && !streamId) {
       return (
         <Embed
           icon="right circle arrow"
-          // onClick={() => this.subscribeToStream()}
-          placeholder={defaultVideoImage}
+          onClick={() => this.subscribeToStream()}
+          placeholder={`/images/${streamImage}`}
         />
       );
     }
@@ -136,9 +170,12 @@ class StreamAudience extends React.Component {
   }
 }
 
-const mapStateToProps = ({ media }) => {
+const mapStateToProps = ({ media, streams }, ownProps) => {
+  const streamId = ownProps.id;
   return {
     media,
+    streamStreaming: streams[streamId].streaming,
+    streamImage: streams[streamId].image,
   };
 };
 
@@ -146,4 +183,6 @@ export default connect(mapStateToProps, {
   createMedia,
   setStream,
   resetStream,
+  getStreamToken,
+  fetchStream,
 })(StreamAudience);
