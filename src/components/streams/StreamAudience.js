@@ -11,9 +11,6 @@ import {
   getStreamToken,
   fetchStream,
 } from "../../actions";
-import defaultVideoImage from "../../assets/images/defaultVideoImage.jpg";
-import defaultVideoImageNoStream from "../../assets/images/defaultVideoImage-noStream.jpg";
-
 import "../../assets/styles/StreamAudience.css";
 
 class StreamAudience extends React.Component {
@@ -84,17 +81,13 @@ class StreamAudience extends React.Component {
       token: this.props.token,
       host: false,
     };
-    console.log(`This one is: ${JSON.stringify(option)}`);
     //this.props.setClient(streamClient);
     this.streamClient.join(option).then((uid) => {
       // set action stream is ON
       this.props.setStream(this.streamClient._params.uid);
-      console.log(`This two is: ${this}`);
 
       // Manage subscriptions
       this.streamClient.on("stream-added", (evt) => {
-        console.log(`This three is: ${this}`);
-
         var remoteStream = evt.stream;
         var id = remoteStream.getId();
         if (id !== this.streamClient._params.uid) {
@@ -137,7 +130,11 @@ class StreamAudience extends React.Component {
       return (
         <div className="ui embed">
           <i aria-hidden="true" className="hourglass icon" />
-          <img className="placeholder" src={`/images/${streamImage}`} />
+          <img
+            alt="stream"
+            className="placeholder"
+            src={`/images/${streamImage}`}
+          />
         </div>
       );
     } else if (streamStreaming && !streamId) {

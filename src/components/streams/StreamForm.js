@@ -1,7 +1,18 @@
 import React from "react";
+// import Globalize from "globalize";
+// import globalizeLocalizer from "react-widgets-globalize";
 import { Field, reduxForm } from "redux-form";
+// import { DateTimePicker } from "react-widgets";
+
+// Globalize.load(require("cldr-data").entireSupplemental());
+
+// Globalize.locale("es");
+
+// globalizeLocalizer();
 
 class StreamForm extends React.Component {
+  componentDidMount() {}
+
   renderError({ error, touched }) {
     if (touched && error) {
       return (
@@ -23,9 +34,20 @@ class StreamForm extends React.Component {
     );
   };
 
-  onSubmit = formValues => {
+  onSubmit = (formValues) => {
     this.props.onSubmit(formValues);
   };
+
+  // renderDateTimePicker = ({ input: { onChange, value }, showTime }) => {
+  //   return (
+  //     <DateTimePicker
+  //       onChange={onChange}
+  //       format="DD MMM YYYY"
+  //       time={showTime}
+  //       value={!value ? null : new Date(value)}
+  //     />
+  //   );
+  // };
 
   render() {
     return (
@@ -40,13 +62,18 @@ class StreamForm extends React.Component {
           component={this.renderInput}
           label="Description"
         />
+        {/* <Field
+          name="dob"
+          showTime={false}
+          component={this.renderDateTimePicker}
+        /> */}
         <button className="ui button primary">Submit</button>
       </form>
     );
   }
 }
 
-const validate = formValues => {
+const validate = (formValues) => {
   // if we return an empty object, that means validation was OK
   const errors = {};
   if (!formValues.title) {
@@ -63,5 +90,5 @@ const validate = formValues => {
 
 export default reduxForm({
   form: "streamForm",
-  validate
+  validate,
 })(StreamForm);

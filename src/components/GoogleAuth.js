@@ -1,6 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Button } from "semantic-ui-react";
+import { isBrowser } from "react-device-detect";
+
 import { signIn, signOut } from "../actions";
 
 class GoogleAuth extends React.Component {
@@ -55,7 +57,11 @@ class GoogleAuth extends React.Component {
     } else {
       return (
         <>
-          <span style={{ margin: "0 1em 0 0" }}>Ingresar:</span>
+          {isBrowser ? (
+            <span style={{ margin: "0 1em 0 0" }}>Ingresar:</span>
+          ) : (
+            ""
+          )}
 
           <Button
             circular
